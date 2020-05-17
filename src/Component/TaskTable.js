@@ -3,15 +3,24 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Badge from "react-bootstrap/Badge";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Edit from "./Edit";
+import TaskRow from "./TaskRow";
+import TaskList from "../Tasks/Task.json";
 
-// import TaskList from "../Tasks/Task.json";
 export default class TaskTable extends Component {
     constructor(props) {
         super(props);
-        // localStorage.setItem("Tasks", JSON.stringify(TaskList.Task));
+        var local;
+        local = localStorage.getItem("Tasks");
+        if (local === "undefined") {
+            console.log(local);
+            //local = JSON.stringify(TaskList.Task);
+            localStorage.setItem("Tasks", JSON.stringify(TaskList.Task));
+        }
+
+        //localStorage.setItem("Tasks", JSON.stringify(TaskList.Task));
         this.addTask = this.addTask.bind(this);
         this.delete = this.delete.bind(this);
         this.update = this.update.bind(this);
@@ -21,7 +30,12 @@ export default class TaskTable extends Component {
         this.handleSave = this.handleSave.bind(this);
         this.toggleEditOrSave = this.toggleEditOrSave.bind(this);
 
-        const local = localStorage.getItem("Tasks");
+        // console.log(localStorage.getItem("Tasks"));
+
+        local = localStorage.getItem("Tasks");
+
+        // local = JSON.stringify(TaskList.Task);
+
         this.state = {
             Task: JSON.parse(local),
             newTask: this.props.newTask,
@@ -33,6 +47,8 @@ export default class TaskTable extends Component {
 
         //console.log(this.state.TaskList.Task);
     }
+
+    UNSAFE_componentWillMount() {}
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.newTask !== null) {
             // this.addTask(nextProps.newTask);
@@ -65,6 +81,13 @@ export default class TaskTable extends Component {
         //console.log(tmpArr);
         // this.state.Task[index].name = newName;
         // this.state.Task[index].level = newLevel;
+    }
+
+    sortChange(by, dir) {
+        this.setState({
+            by: by,
+            dir: dir,
+        });
     }
 
     delete(name) {
@@ -103,21 +126,16 @@ export default class TaskTable extends Component {
         } else if (this.state.isEdit === true) {
             // console.log("text ", task.name);
             return (
-                <td>
-                    <Form.Control
-                        type="text"
-                        value={this.state.newName}
-                        onChange={this.nameChange}
-                    ></Form.Control>
-                </td>
+                <Edit newName={this.state.newName}></Edit>
+                // <td>
+                //     <Form.Control
+                //         type="text"
+                //         value={this.state.newName}
+                //         onChange={this.nameChange}
+                //     ></Form.Control>
+                // </td>
             );
         }
-    }
-
-    levelChange(e) {
-        this.setState({
-            newLevel: e.target.value,
-        });
     }
 
     isEditLevel(task) {
@@ -142,6 +160,12 @@ export default class TaskTable extends Component {
                 </td>
             );
         }
+    }
+
+    levelChange(e) {
+        this.setState({
+            newLevel: e.target.value,
+        });
     }
 
     addTask(newTask) {
@@ -170,13 +194,9 @@ export default class TaskTable extends Component {
         }
     }
 
-    handleSave(name, level) {
+    handleSave(oldName, newName, newLevel) {
         this.setState({ isEdit: false });
-        this.update(
-            this.state.editName,
-            this.state.newName,
-            parseInt(this.state.newLevel)
-        );
+        this.update(oldName, newName, parseInt(newLevel));
     }
 
     toggleEditOrSave(task) {
@@ -249,7 +269,7 @@ export default class TaskTable extends Component {
     }
 
     render() {
-        // console.log("render");
+        // console.log("nomal", this.state.Task);
         // if (this.props.newTask !== null) {
         //     const taskListAdded = [...this.state.Task, ...this.props.newTask];
         //     console.log(taskListAdded);
@@ -267,45 +287,33 @@ export default class TaskTable extends Component {
         //         .includes(this.props.search.toLowerCase());
         // });
 
-        const taskListSorted = this.sort(
+        // console.log("search", taskListSearched, this.props.by, this.props.dir);
+
+        // const taskListSorted = this.sort(
+        //     taskListSearched,
+        //     this.props.by,
+        //     this.props.dir
+        // );
+        // console.log("sort", taskListSorted);
+        // console.log(taskListSorted);up
+
+        const taskList = this.sort(
             taskListSearched,
             this.props.by,
             this.props.dir
-        );
-        // console.log(taskListSorted);
-
-        const taskList = taskListSorted.map((task, index) => {
+        ).map((task, index) => {
+            // console.log("task", task);
             return (
-                <tr key={index}>
-                    <td className="text-center">{index + 1}</td>
-                    {this.isEditName(task)}
-                    {this.isEditLevel(task)}
-                    {/* <td>{task.name}</td> */}
-                    {/* <td className="text-center">{this.level(task.level)}</td> */}
-                    <td className="text-center">
-                        <ButtonGroup>
-                            {this.toggleEditOrSave(task)}
-                            {/* <Button
-                                variant="warning"
-                                onClick={() =>
-                                    this.handleEdit(task.name, task.level)
-                                }
-                            >
-                                Edit
-                            </Button> */}
-                            <Button
-                                variant="danger"
-                                onClick={() => {
-                                    return this.delete(task.name);
-                                }}
-                            >
-                                Delete
-                            </Button>
-                        </ButtonGroup>
-                    </td>
-                </tr>
+                <TaskRow
+                    key={index}
+                    index={index}
+                    task={task}
+                    saveClick={this.handleSave}
+                ></TaskRow>
             );
         });
+
+        console.log("table-render");
         return (
             <Col>
                 <Card>

@@ -11,6 +11,7 @@ export default class SortDropDown extends Component {
     }
 
     onSortChange(key) {
+        console.log(key);
         this.setState({
             name: key,
         });
