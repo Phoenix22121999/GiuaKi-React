@@ -8,7 +8,7 @@ class Title extends Component {
                     ToDo List <small>ReactJS Demo </small>
                 </h1>
                 <h2>
-                    <small>Nguyễn Hữu Tấn Đạt - 51702075 </small>
+                    <small>51702075 - 51702017 - 51702014 - 51702114</small>
                 </h2>
             </div>
         );

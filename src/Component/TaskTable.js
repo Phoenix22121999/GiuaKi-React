@@ -318,7 +318,7 @@ export default class TaskTable extends Component {
             <Col>
                 <Card>
                     <Card.Body>
-                        <Card.Header>List Task</Card.Header>
+                        <Card.Header as="h3">List Task</Card.Header>
                         <Table striped bordered hover variant="dark">
                             <thead>
                                 <tr>
