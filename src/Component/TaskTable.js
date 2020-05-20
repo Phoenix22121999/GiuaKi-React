@@ -14,7 +14,7 @@ export default class TaskTable extends Component {
         super(props);
         var local;
         local = localStorage.getItem("Tasks");
-        if (local === "undefined") {
+        if (local === undefined || local === null || local === "undefined") {
             console.log(local);
             //local = JSON.stringify(TaskList.Task);
             localStorage.setItem("Tasks", JSON.stringify(TaskList.Task));
@@ -309,6 +309,7 @@ export default class TaskTable extends Component {
                     index={index}
                     task={task}
                     saveClick={this.handleSave}
+                    deleteClick={this.delete}
                 ></TaskRow>
             );
         });

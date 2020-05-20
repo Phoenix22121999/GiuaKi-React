@@ -40,6 +40,11 @@ export default class TaskRow extends Component {
     }
 
     handleSave() {
+        this.props.saveClick(
+            this.state.editName,
+            this.state.newName,
+            this.state.newLevel
+        );
         console.log(
             this.state.editName,
             this.state.newName,
@@ -52,11 +57,11 @@ export default class TaskRow extends Component {
                 level: parseInt(this.state.newLevel),
             },
         });
-        this.update(
-            this.state.editName,
-            this.state.newName,
-            parseInt(this.state.newLevel)
-        );
+        // this.update(
+        //     this.state.editName,
+        //     this.state.newName,
+        //     parseInt(this.state.newLevel)
+        // );
     }
 
     toggleEditOrSave(task) {
@@ -131,12 +136,13 @@ export default class TaskRow extends Component {
 
     delete(name) {
         // console.log("delete");
-        const tmpArr = this.state.Task.filter((task) => {
-            return task.name !== name;
-        });
-        this.setState({
-            Task: tmpArr,
-        });
+        this.props.deleteClick(name);
+        // const tmpArr = this.state.Task.filter((task) => {
+        //     return task.name !== name;
+        // });
+        // this.setState({
+        //     Task: tmpArr,
+        // });
     }
 
     isEditLevel(task) {
